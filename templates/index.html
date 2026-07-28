@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Sentiment Analysis Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .navbar { background: linear-gradient(135deg, #0d6efd, #0dcaf0); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark shadow-sm mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1 fw-bold">QSkill Python Internship | Advanced NLP Dashboard</span>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card p-4 h-100">
+                    <h4 class="mb-3 text-primary fw-semibold">Real-Time Text Analysis</h4>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="user_text" class="form-label text-muted">Enter text or customer review:</label>
+                            <textarea class="form-label form-control w-100" name="user_text" id="user_text" rows="5" placeholder="Type something here..." required>{{ user_text }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm">Analyze Sentiment</button>
+                    </form>
+
+                    {% if result %}
+                        <div class="mt-4 p-3 rounded border {% if result == 'Positive' %}bg-success-subtle text-success-emphasis{% elif result == 'Negative' %}bg-danger-subtle text-danger-emphasis{% else %}bg-warning-subtle text-warning-emphasis{% endif %}">
+                            <h5 class="mb-1 fw-bold">Result: {{ result }}</h5>
+                            <hr class="my-2">
+                            <p class="mb-0 small"><strong>Polarity Score:</strong> {{ polarity }} &nbsp;|&nbsp; <strong>Subjectivity Score:</strong> {{ subjectivity }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card p-4 h-100 text-center d-flex flex-column justify-content-center align-items-center">
+                    <h4 class="mb-3 text-secondary fw-semibold">Sentiment Analytics Distribution</h4>
+                    {% if chart_url %}
+                        <img src="data:image/png;base64,{{ chart_url }}" alt="Sentiment Chart" class="img-fluid" style="max-height: 240px;">
+                    {% else %}
+                        <p class="text-muted my-auto">Submit text to generate visual analytics breakdown.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if history %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card p-4">
+                    <h5 class="mb-3 text-dark fw-semibold">Recent Analysis History</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Text Input</th>
+                                    <th>Sentiment</th>
+                                    <th>Polarity</th>
+                                    <th>Subjectivity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in history %}
+                                <tr>
+                                    <td class="text-truncate" style="max-width: 300px;">{{ item.text }}</td>
+                                    <td>
+                                        <span class="badge {% if item.sentiment == 'Positive' %}bg-success{% elif item.sentiment == 'Negative' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                            {{ item.sentiment }}
+                                        </span>
+                                    </td>
+                                    <td>{{ item.polarity }}</td>
+                                    <td>{{ item.subjectivity }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
